@@ -58,6 +58,6 @@ void alterarPersonagem(CadastroPersonagens *cadastro);
 void excluirPersonagem(CadastroPersonagens *cadastro);
 
 PERSONAGEM *buscarPersonagemPorId(CadastroPersonagens *cadastro, int id);
-int lerInteiro();
+int lerInteiroPersonagem();
 
 #endif // PERSONAGEM_H

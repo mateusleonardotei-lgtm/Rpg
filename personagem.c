@@ -3,7 +3,7 @@
 #include "personagem.h"
 
 // Função para ler o nome do personagem, garantindo que não exceda o tamanho máximo permitido
-int lerNome(char nome[])
+int lerNomePersonagem(char nome[])
 {
     int c;
     int i = 0;
@@ -28,7 +28,7 @@ int lerNome(char nome[])
     return excedeu;
 }
 
-int lerInteiro()
+int lerInteiroPersonagem()
 {
     int valor;
     char c;
@@ -70,9 +70,8 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite o id do personagem: ");
-        novo->id = lerInteiro();
-        while (getchar() != '\n')
-            ;
+        novo->id = lerInteiroPersonagem();
+        while (getchar() != '\n');
 
         if (novo->id <= 0)
         {
@@ -85,7 +84,7 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("Digite o nome do personagem: ");
-        nomeInvalido = lerNome(novo->nome);
+        nomeInvalido = lerNomePersonagem(novo->nome);
 
         if (strlen(novo->nome) == 0)
         {
@@ -102,10 +101,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a raca do personagem (0 - ELFO, 1 - ANAO, 2 - HUMANO, 3 - HALFING): ");
-        tempRaca = lerInteiro();
+        tempRaca = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (tempRaca < 0 || tempRaca > 3)
         {
@@ -119,7 +117,7 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a classe do personagem (0 - GUERREIRO, 1 - MAGO, 2 - LADINO, 3 - CLERIGO): ");
-        tempClasse = lerInteiro();
+        tempClasse = lerInteiroPersonagem();
 
         while (getchar() != '\n');
 
@@ -135,7 +133,7 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite o nivel do personagem (entre 1 e 20): ");
-        novo->nivel = lerInteiro();
+        novo->nivel = lerInteiroPersonagem();
 
         while (getchar() != '\n');
 
@@ -149,10 +147,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a vida maxima do personagem (entre 1 e 999): ");
-        novo->vidaMaxima = lerInteiro();
+        novo->vidaMaxima = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (novo->vidaMaxima < 1)
         {
@@ -164,10 +161,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a vida atual do personagem (entre 0 e %d): ", novo->vidaMaxima);
-        novo->vidaAtual = lerInteiro();
+        novo->vidaAtual = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (novo->vidaAtual < 0 || novo->vidaAtual > novo->vidaMaxima)
         {
@@ -179,10 +175,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite o ataque do personagem (entre 0 e 30): ");
-        novo->ataque = lerInteiro();
+        novo->ataque = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (novo->ataque < 0)
         {
@@ -194,7 +189,7 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a defesa do personagem (entre 0 e 30): ");
-        novo->defesa = lerInteiro();
+        novo->defesa = lerInteiroPersonagem();
 
         while (getchar() != '\n')
             ;
@@ -209,10 +204,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite a iniciativa do personagem (entre -5 e 20): ");
-        novo->iniciativa = lerInteiro();
+        novo->iniciativa = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (novo->iniciativa < -5)
         {
@@ -224,10 +218,9 @@ void preencherPersonagem(PERSONAGEM *novo)
     do
     {
         printf("\nDigite o poder do personagem (entre 1 e 100): ");
-        novo->poder = lerInteiro();
+        novo->poder = lerInteiroPersonagem();
 
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         if (novo->poder < 1)
         {
@@ -351,10 +344,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
     PERSONAGEM *personagem;
 
     printf("Digite o ID do personagem que deseja alterar: ");
-    id = lerInteiro();
+    id = lerInteiroPersonagem();
 
-    while (getchar() != '\n')
-        ;
+    while (getchar() != '\n');
 
     personagem = buscarPersonagemPorId(cadastro, id);
 
@@ -382,15 +374,14 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
     printf("0 - Cancelar\n");
 
     printf("\nDigite uma opcao: ");
-    opcao = lerInteiro();
-    while (getchar() != '\n')
-        ;
+    opcao = lerInteiroPersonagem();
+    while (getchar() != '\n');
 
     switch (opcao)
     {
     case 1:;
         printf("Digite o novo nome: ");
-        lerNome(personagem->nome);
+        lerNomePersonagem(personagem->nome);
 
         if (strlen(personagem->nome) == 0)
         {
@@ -412,10 +403,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
             printf("2 - HUMANO\n");
             printf("3 - HALFING\n");
             printf("Opcao: ");
-            tempRaca = lerInteiro();
+            tempRaca = lerInteiroPersonagem();
 
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             if (tempRaca < 0 || tempRaca > 3)
             {
@@ -437,10 +427,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
             printf("2 - LADINO\n");
             printf("3 - CLERIGO\n");
             printf("Opcao: ");
-            tempClasse = lerInteiro();
+            tempClasse = lerInteiroPersonagem();
 
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             if (tempClasse < 0 || tempClasse > 3)
             {
@@ -458,10 +447,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite o novo nivel do personagem (entre 1 e 20): ");
-            novoNivel = lerInteiro();  
+            novoNivel = lerInteiroPersonagem();  
 
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             if (novoNivel < 1 || novoNivel > 20)
             {
@@ -480,9 +468,8 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite a nova vida maxima: ");
-            novaVidaMaxima = lerInteiro();
-            while (getchar() != '\n')
-                ;
+            novaVidaMaxima = lerInteiroPersonagem();
+            while (getchar() != '\n');
 
             if (novaVidaMaxima < personagem->vidaAtual || novaVidaMaxima > 999)
             {
@@ -502,10 +489,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite a nova vida atual do personagem (entre 0 e %d): ", personagem->vidaMaxima);
-            novaVidaAtual = lerInteiro();
+            novaVidaAtual = lerInteiroPersonagem();
 
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             if (novaVidaAtual < 0 || novaVidaAtual > personagem->vidaMaxima)
             {
@@ -522,10 +508,9 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite o novo ataque do personagem (entre 0 e 30): ");
-            novoAtaque = lerInteiro();
+            novoAtaque = lerInteiroPersonagem();
 
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             if (novoAtaque < 0 || novoAtaque > 30)
             {
@@ -542,7 +527,7 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite a nova defesa do personagem (entre 0 e 30): ");
-            novaDefesa = lerInteiro();
+            novaDefesa = lerInteiroPersonagem();
 
             while (getchar() != '\n');
 
@@ -561,7 +546,7 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite a nova iniciativa do personagem (entre -5 e 20): ");
-            novaIniciativa = lerInteiro();
+            novaIniciativa = lerInteiroPersonagem();
 
             while (getchar() != '\n');
 
@@ -580,7 +565,7 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         do
         {
             printf("\nDigite o novo poder do personagem (entre 1 e 100): ");
-            novoPoder = lerInteiro();
+            novoPoder = lerInteiroPersonagem();
 
             while (getchar() != '\n');
 
@@ -610,7 +595,7 @@ void excluirPersonagem(CadastroPersonagens *cadastro){
     int index = -1;
 
     printf("Digite o ID do personagem que deseja excluir: ");
-    id = lerInteiro();
+    id = lerInteiroPersonagem();
 
     while (getchar() != '\n');
 

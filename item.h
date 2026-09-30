@@ -3,12 +3,17 @@
 
 typedef enum
 {
-    ARMA,
-    ARMADURA,
-    CONSUMIVEL,
-    ACESSORIO
-
-} tipoItem;
+    ELMO,
+    PEITORAL,
+    MANOPLAS,
+    CALCA,
+    BOTAS,
+    ANEL,
+    COLAR,
+    CINTO,
+    ARMA_UMA_MAO,
+    ARMA_DUAS_MAOS
+} TIPO_ITEM;
 
 
 typedef struct
@@ -16,7 +21,7 @@ typedef struct
     int id;
     char nome[50];
 
-    tipoItem tipo;
+    TIPO_ITEM tipo;
 
     int espacos;
 
@@ -34,4 +39,4 @@ void cadastrarItem(item *novo);
 
 void mostrarItem(item *i);
 
-#endif // ITEM_H
+#endif // ITEM.H

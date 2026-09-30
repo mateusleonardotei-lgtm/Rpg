@@ -1,16 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "personagem.h"
+#include "inventario.h"
+#include "item.h"
 
 int main()
 {
     CadastroPersonagens cadastro;
     PERSONAGEM novo;
     PERSONAGEM *encontrado;
+    INVENTARIO inventario;
 
     int opcao;
     int idBusca;
 
     inicializarCadastro(&cadastro);
+    inicializarInventario(&inventario);
 
     do
     {
@@ -26,7 +31,7 @@ int main()
         printf("============================\n");
 
         printf("Digite uma opcao: ");
-        opcao = lerInteiro();
+        opcao = lerInteiroPersonagem();
         while (getchar() != '\n');
 
         switch (opcao)
@@ -45,7 +50,7 @@ int main()
 
             case 3:
                 printf("\nDigite o ID do personagem que deseja buscar: ");
-                idBusca = lerInteiro();
+                idBusca = lerInteiroPersonagem();
                 while (getchar() != '\n');
 
                 encontrado = buscarPersonagemPorId(&cadastro, idBusca);
@@ -80,6 +85,8 @@ int main()
         }
 
     } while (opcao != 0);
+
+    free(inventario.itens);
 
     return 0;
 }

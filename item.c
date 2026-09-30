@@ -2,8 +2,26 @@
 #include <string.h>
 #include "item.h"
 
+int lerInteiroItem()
+{
+    int valor;
+    char c;
 
-int lerNome(char nome[])
+    while (1)
+    {
+        if (scanf("%d%c", &valor, &c) == 2 && c == '\n')
+        {
+            return valor;
+        }
+
+        printf("Erro: digite apenas um numero!\n");
+
+        while (getchar() != '\n');
+    }
+}
+
+
+int lerNomeItem(char nome[])
 {
     int c;
     int i = 0;
@@ -36,7 +54,7 @@ void cadastrarItem(item *novo)
     do
     {
         printf("\nDigite o id do item: ");
-        scanf("%d", &novo->id);
+        novo->id = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -51,7 +69,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o nome do item: ");
 
-        nomeInvalido = lerNome(novo->nome);
+        nomeInvalido = lerNomeItem(novo->nome);
 
         if (strlen(novo->nome) == 0)
         {
@@ -65,28 +83,36 @@ void cadastrarItem(item *novo)
     } while (strlen(novo->nome) == 0 || nomeInvalido);
 
     do
+{
+    printf("\nDigite o tipo do item:\n");
+    printf("0 - ELMO\n");
+    printf("1 - PEITORAL\n");
+    printf("2 - MANOPLAS\n");
+    printf("3 - CALCA\n");
+    printf("4 - BOTAS\n");
+    printf("5 - ANEL\n");
+    printf("6 - COLAR\n");
+    printf("7 - CINTO\n");
+    printf("8 - ARMA_UMA_MAO\n");
+    printf("9 - ARMA_DUAS_MAOS\n");
+    printf("Opcao: ");
+
+    tempTipo = lerInteiroItem();
+
+    if (tempTipo < 0 || tempTipo > 9)
     {
-        printf("\nDigite o tipo do item ");
-        printf("(0 - Arma, 1 - Armadura, 2 - Consumivel, 3 - Acessorio): ");
+        printf("Erro: tipo invalido!\n");
+    }
 
-        scanf("%d", &tempTipo);
+} while (tempTipo < 0 || tempTipo > 9);
 
-        while (getchar() != '\n');
-
-        if (tempTipo < 0 || tempTipo > 3)
-        {
-            printf("Erro: tipo invalido!\n");
-        }
-
-    } while (tempTipo < 0 || tempTipo > 3);
-
-    novo->tipo = (tipoItem)tempTipo;
+    novo->tipo = (TIPO_ITEM)tempTipo;
 
     do
     {
         printf("\nDigite a quantidade de espacos que o item ocupa (1 a 50): ");
 
-        scanf("%d", &novo->espacos);
+        novo->espacos = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -101,7 +127,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o bonus de ataque do item: ");
 
-        scanf("%d", &novo->bonusAtaque);
+        novo->bonusAtaque = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -116,7 +142,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o bonus de defesa do item: ");
 
-        scanf("%d", &novo->bonusDefesa);
+        novo->bonusDefesa = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -131,7 +157,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o bonus de vida do item: ");
 
-        scanf("%d", &novo->bonusVida);
+        novo->bonusVida = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -146,7 +172,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o bonus de iniciativa do item: ");
 
-        scanf("%d", &novo->bonusIniciativa);
+        novo->bonusIniciativa = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -161,7 +187,7 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o poder do item: ");
 
-        scanf("%d", &novo->poder);
+        novo->poder = lerInteiroItem();
 
         while (getchar() != '\n');
 
@@ -183,24 +209,48 @@ void mostrarItem(item *i)
 
     printf("Tipo: ");
 
-    switch(i->tipo)
-    {
-        case ARMA:
-            printf("Arma");
-            break;
+    switch (i->tipo)
+{
+    case ELMO:
+        printf("ELMO");
+        break;
 
-        case ARMADURA:
-            printf("Armadura");
-            break;
+    case PEITORAL:
+        printf("PEITORAL");
+        break;
 
-        case CONSUMIVEL:
-            printf("Consumivel");
-            break;
+    case MANOPLAS:
+        printf("MANOPLAS");
+        break;
 
-        case ACESSORIO:
-            printf("Acessorio");
-            break;
-    }
+    case CALCA:
+        printf("CALCA");
+        break;
+
+    case BOTAS:
+        printf("BOTAS");
+        break;
+
+    case ANEL:
+        printf("ANEL");
+        break;
+
+    case COLAR:
+        printf("COLAR");
+        break;
+
+    case CINTO:
+        printf("CINTO");
+        break;
+
+    case ARMA_UMA_MAO:
+        printf("ARMA_UMA_MAO");
+        break;
+
+    case ARMA_DUAS_MAOS:
+        printf("ARMA_DUAS_MAOS");
+        break;
+}
 
     printf("\nEspacos: %d\n", i->espacos);
     printf("Bonus de ataque: %d\n", i->bonusAtaque);
