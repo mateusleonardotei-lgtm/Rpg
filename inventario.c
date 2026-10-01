@@ -14,7 +14,12 @@ void inicializarInventario(INVENTARIO *inventario)
 
 // Função para adicionar um item ao inventário
 void adicionarItem(INVENTARIO *inventario, item *novo)
-{
+{   
+
+    if(buscarItem(inventario, novo->id) != NULL){
+        printf("Erro: ja existe um item com esse ID no inventario!\n");
+        return;
+    }
     if (inventario->quantidade >= inventario->capacidade) // verifica se o inventário está cheio
     {
         printf("Erro: inventario cheio!\n");
@@ -81,4 +86,25 @@ void removerItem(INVENTARIO *inventario, int id)
     inventario->espacosOcupados -= espacosRemovidos; // decrementa a quantidade de espaços ocupados pelo item removido
 
     printf("Item removido do inventario com sucesso!\n");
+}
+
+
+
+void listarInventario(INVENTARIO *inventario)
+{
+    if (inventario->quantidade == 0)
+    {
+        printf("\nO inventario esta vazio!\n");
+        return;
+    }
+
+    printf("\n---- INVENTARIO ----\n");
+
+    for (int i = 0; i < inventario->quantidade; i++)
+    {
+        printf("\n--- Item %d ---\n", i + 1);
+        mostrarItem(&inventario->itens[i]);
+    }
+
+    printf("\nEspacos ocupados: %d/%d\n", inventario->espacosOcupados,inventario->capacidade);
 }

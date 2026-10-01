@@ -1,6 +1,8 @@
 #ifndef PERSONAGEM_H
 #define PERSONAGEM_H
 
+#include "inventario.h"
+
 #define MAX_PERSONAGENS 20
 
 typedef enum
@@ -39,6 +41,11 @@ typedef struct
     int iniciativa;
     int poder;
 
+    INVENTARIO inventario;
+
+    item equipamentos[10];
+    int equipamentosOcupados[10];
+
 } PERSONAGEM;
 
 
@@ -56,6 +63,10 @@ void mostrarPersonagem(PERSONAGEM *p);
 void listarPersonagens(CadastroPersonagens *cadastro);
 void alterarPersonagem(CadastroPersonagens *cadastro);
 void excluirPersonagem(CadastroPersonagens *cadastro);
+void listarEquipamentos(PERSONAGEM *personagem);
+void equiparItem(PERSONAGEM *personagem, int idItem);
+void desequiparItem(PERSONAGEM *personagem, int slot);
+void exibirAtributosTotais(PERSONAGEM *personagem);
 
 PERSONAGEM *buscarPersonagemPorId(CadastroPersonagens *cadastro, int id);
 int lerInteiroPersonagem();

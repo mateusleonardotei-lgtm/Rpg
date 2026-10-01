@@ -16,6 +16,7 @@ typedef struct
 void inicializarInventario(INVENTARIO *inventario);
 void adicionarItem(INVENTARIO *inventario, item *novo);
 void removerItem(INVENTARIO *inventario, int id);
+void listarInventario(INVENTARIO *inventario);
 
 item *buscarItem(INVENTARIO *inventario, int id);
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "personagem.h"
+#include "inventario.h"
 
 // Função para ler o nome do personagem, garantindo que não exceda o tamanho máximo permitido
 int lerNomePersonagem(char nome[])
@@ -252,6 +253,10 @@ void cadastrarPersonagem(PERSONAGEM *novo, CadastroPersonagens *cadastro)
     }
 
     cadastro->personagens[cadastro->quantidade] = *novo;
+    inicializarInventario(&cadastro->personagens[cadastro->quantidade].inventario);
+    for(int i = 0; i < 10; i++){
+        cadastro->personagens[cadastro->quantidade].equipamentosOcupados[i] = 0;
+    }
     cadastro->quantidade++;
 
     printf("Personagem cadastrado com sucesso!\n");
@@ -618,4 +623,333 @@ void excluirPersonagem(CadastroPersonagens *cadastro){
     cadastro->quantidade--;
 
     printf("Personagem excluido com sucesso!\n");
+}
+
+
+
+void listarEquipamentos(PERSONAGEM *personagem)
+{
+    printf("\n---- EQUIPAMENTOS DE %s ----\n", personagem->nome);
+
+    printf("\nElmo: ");
+    if(personagem->equipamentosOcupados[0]){
+        mostrarItem(&personagem->equipamentos[0]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Peitoral: ");
+    if (personagem->equipamentosOcupados[1]){
+        mostrarItem(&personagem->equipamentos[1]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+    printf("Manoplas: ");
+    if (personagem->equipamentosOcupados[2]){
+        mostrarItem(&personagem->equipamentos[2]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Calca: ");
+    if (personagem->equipamentosOcupados[3]){
+        mostrarItem(&personagem->equipamentos[3]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Botas: ");
+    if (personagem->equipamentosOcupados[4]){
+        mostrarItem(&personagem->equipamentos[4]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Anel: ");
+    if (personagem->equipamentosOcupados[5]){
+        mostrarItem(&personagem->equipamentos[5]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Colar: ");
+    if (personagem->equipamentosOcupados[6]){
+        mostrarItem(&personagem->equipamentos[6]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Cinto: ");
+    if (personagem->equipamentosOcupados[7]){
+        mostrarItem(&personagem->equipamentos[7]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Mao direita: ");
+    if (personagem->equipamentosOcupados[8]){
+        mostrarItem(&personagem->equipamentos[8]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+
+    printf("Mao esquerda: ");
+    if (personagem->equipamentosOcupados[9]){
+        mostrarItem(&personagem->equipamentos[9]);
+    }
+    else{
+        printf("Vazio\n");
+    }
+}
+
+void equiparItem(PERSONAGEM *personagem, int idItem)
+{
+    item *item = buscarItem(&personagem->inventario, idItem);
+
+    if (item == NULL)
+    {
+        printf("\nErro: item nao encontrado no inventario!\n");
+        return;
+    }
+
+    switch (item->tipo)
+    {
+    case ELMO:
+        if (personagem->equipamentosOcupados[0])
+        {
+            printf("\nErro: o slot de Elmo ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[0] = *item;
+        personagem->equipamentosOcupados[0] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nElmo equipado com sucesso!\n");
+        break;
+
+    case PEITORAL:
+        if (personagem->equipamentosOcupados[1])
+        {
+            printf("\nErro: o slot de Peitoral ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[1] = *item;
+        personagem->equipamentosOcupados[1] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nPeitoral equipado com sucesso!\n");
+        break;
+
+    case MANOPLAS:
+    if (personagem->equipamentosOcupados[2])
+    {
+        printf("\nErro: o slot de Manoplas ja esta ocupado!\n");
+        return;
+    }
+
+    personagem->equipamentos[2] = *item;
+    personagem->equipamentosOcupados[2] = 1;
+    removerItem(&personagem->inventario, idItem);
+
+    printf("\nManoplas equipadas com sucesso!\n");
+    break;
+
+    case CALCA:
+        if (personagem->equipamentosOcupados[3])
+        {
+            printf("\nErro: o slot de Calca ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[3] = *item;
+        personagem->equipamentosOcupados[3] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nCalca equipada com sucesso!\n");
+        break;
+
+    case BOTAS:
+        if (personagem->equipamentosOcupados[4])
+        {
+            printf("\nErro: o slot de Botas ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[4] = *item;
+        personagem->equipamentosOcupados[4] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nBotas equipadas com sucesso!\n");
+        break;
+
+    case ANEL:
+        if (personagem->equipamentosOcupados[5])
+        {
+            printf("\nErro: o slot de Anel ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[5] = *item;
+        personagem->equipamentosOcupados[5] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nAnel equipado com sucesso!\n");
+        break;
+
+    case COLAR:
+        if (personagem->equipamentosOcupados[6])
+        {
+            printf("\nErro: o slot de Colar ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[6] = *item;
+        personagem->equipamentosOcupados[6] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nColar equipado com sucesso!\n");
+        break;
+
+    case CINTO:
+        if (personagem->equipamentosOcupados[7])
+        {
+            printf("\nErro: o slot de Cinto ja esta ocupado!\n");
+            return;
+        }
+
+        personagem->equipamentos[7] = *item;
+        personagem->equipamentosOcupados[7] = 1;
+        removerItem(&personagem->inventario, idItem);
+
+        printf("\nCinto equipado com sucesso!\n");
+        break;
+
+    case ARMA_UMA_MAO:
+        if (!personagem->equipamentosOcupados[8])
+        {
+            personagem->equipamentos[8] = *item;
+            personagem->equipamentosOcupados[8] = 1;
+
+            removerItem(&personagem->inventario, idItem);
+
+            printf("\nArma equipada na mao direita!\n");
+        }
+        else if (!personagem->equipamentosOcupados[9])
+        {
+            personagem->equipamentos[9] = *item;
+            personagem->equipamentosOcupados[9] = 1;
+
+            removerItem(&personagem->inventario, idItem);
+
+            printf("\nArma equipada na mao esquerda!\n");
+        }
+        else
+        {
+            printf("\nErro: as duas maos estao ocupadas!\n");
+        }
+        break;
+
+    case ARMA_DUAS_MAOS:
+        if (!personagem->equipamentosOcupados[8] && !personagem->equipamentosOcupados[9])
+        {
+            personagem->equipamentos[8] = *item;
+            personagem->equipamentos[9] = *item;
+
+            personagem->equipamentosOcupados[8] = 1;
+            personagem->equipamentosOcupados[9] = 1;
+
+            removerItem(&personagem->inventario, idItem);
+
+            printf("\nArma de duas maos equipada!\n");
+        }
+        else
+        {
+            printf("\nErro: e necessario ter as duas maos livres!\n");
+        }
+        break;
+    }
+}
+
+
+
+void desequiparItem(PERSONAGEM *personagem, int slot)
+{
+    if (slot < 0 || slot > 9)
+    {
+        printf("\nSlot invalido!\n");
+        return;
+    }
+
+    if (!personagem->equipamentosOcupados[slot])
+    {
+        printf("\nEsse slot esta vazio!\n");
+        return;
+    }
+
+    item item = personagem->equipamentos[slot];
+
+    adicionarItem(&personagem->inventario, &item);
+
+    if (slot == 8 || slot == 9)
+    {
+        if (item.tipo == ARMA_DUAS_MAOS)
+        {
+            personagem->equipamentosOcupados[8] = 0;
+            personagem->equipamentosOcupados[9] = 0;
+        }
+        else
+        {
+            personagem->equipamentosOcupados[slot] = 0;
+        }
+    }
+    else
+    {
+        personagem->equipamentosOcupados[slot] = 0;
+    }
+
+    printf("\nItem desequipado com sucesso!\n");
+}
+
+void exibirAtributosTotais(PERSONAGEM *personagem)
+{
+    int bonusAtaque = 0;
+    int bonusDefesa = 0;
+    int bonusVida = 0;
+    int bonusIniciativa = 0;
+    int bonusPoder = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        if (personagem->equipamentosOcupados[i])
+        {
+            bonusAtaque += personagem->equipamentos[i].bonusAtaque;
+            bonusDefesa += personagem->equipamentos[i].bonusDefesa;
+            bonusVida += personagem->equipamentos[i].bonusVida;
+            bonusIniciativa += personagem->equipamentos[i].bonusIniciativa;
+            bonusPoder += personagem->equipamentos[i].poder;
+        }
+    }
+
+    printf("\n---- ATRIBUTOS TOTAIS ----\n");
+
+    printf("Ataque: %d + %d = %d\n", personagem->ataque, bonusAtaque, personagem->ataque + bonusAtaque);
+
+    printf("Defesa: %d + %d = %d\n", personagem->defesa, bonusDefesa, personagem->defesa + bonusDefesa);
+
+    printf("Vida maxima: %d + %d = %d\n", personagem->vidaMaxima, bonusVida, personagem->vidaMaxima + bonusVida);
+
+    printf("Iniciativa: %d + %d = %d\n", personagem->iniciativa, bonusIniciativa, personagem->iniciativa + bonusIniciativa);
+
+    printf("Poder: %d + %d = %d\n",personagem->poder, bonusPoder, personagem->poder + bonusPoder);
 }
