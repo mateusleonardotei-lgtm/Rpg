@@ -5,11 +5,11 @@
 // Função para inicializar o inventário
 void inicializarInventario(INVENTARIO *inventario)
 {
-    inventario->itens = malloc(inventario->capacidade * sizeof(item)); // aloca dinamicamente a memória para o array de itens
-
     inventario->espacosOcupados = 0;                // o inventario começa com 0 espaços ocupados
     inventario->quantidade = 0;                     // o inventario começa com 0 itens
     inventario->capacidade = CAPACIDADE_INVENTARIO; // capacidade máxima do inventário de 50
+    
+    inventario->itens = malloc(inventario->capacidade * sizeof(item)); // aloca dinamicamente a memória para o array de itens
 }
 
 // Função para adicionar um item ao inventário
