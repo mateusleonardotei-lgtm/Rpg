@@ -35,7 +35,6 @@ int main()
 
         printf("Digite uma opcao: ");
         opcao = lerInteiroPersonagem();
-        while (getchar() != '\n');
 
         switch (opcao)
         {
@@ -54,7 +53,6 @@ int main()
         case 3:;
             printf("\nDigite o ID do personagem que deseja buscar: ");
             idBusca = lerInteiroPersonagem();
-            while (getchar() != '\n');
 
             encontrado = buscarPersonagemPorId(&cadastro, idBusca);
 
@@ -86,8 +84,6 @@ int main()
             printf("\nDigite o ID do personagem: ");
             idPersonagem = lerInteiroPersonagem();
 
-            while (getchar() != '\n');
-
             personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
 
             if (personagem == NULL)
@@ -109,8 +105,6 @@ int main()
                 printf("0 - Voltar\n");
                 printf("Digite uma opcao: ");
                 opcaoInventario = lerInteiroPersonagem();
-
-                while (getchar() != '\n');
 
                 switch (opcaoInventario)
                 {
@@ -134,8 +128,6 @@ int main()
                     printf("\nDigite o ID do item: ");
                     idItem = lerInteiroPersonagem();
 
-                    while (getchar() != '\n');
-
                     itemEncontrado = buscarItem(&personagem->inventario,idItem);
 
                     if (itemEncontrado != NULL)
@@ -156,8 +148,6 @@ int main()
 
                     printf("\nDigite o ID do item que deseja remover: ");
                     idItem = lerInteiroPersonagem();
-
-                    while (getchar() != '\n');
 
                     removerItem(&personagem->inventario, idItem);
 
@@ -197,8 +187,6 @@ int main()
             printf("\nDigite o ID do personagem: ");
             idPersonagem = lerInteiroPersonagem();
 
-            while (getchar() != '\n');
-
             personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
 
             if (personagem == NULL)
@@ -221,8 +209,6 @@ int main()
             printf("\nDigite o ID do personagem: ");
             idPersonagem = lerInteiroPersonagem();
 
-            while (getchar() != '\n');
-
             personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
 
             if (personagem == NULL)
@@ -233,8 +219,6 @@ int main()
 
             printf("\nDigite o ID do item que deseja equipar: ");
             idItem = lerInteiroPersonagem();
-
-            while (getchar() != '\n');
 
             equiparItem(personagem, idItem);
 
@@ -249,8 +233,6 @@ int main()
 
             printf("\nDigite o ID do personagem: ");
             idPersonagem = lerInteiroPersonagem();
-
-            while (getchar() != '\n');
 
             personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
 
@@ -274,8 +256,6 @@ int main()
 
             printf("\nEscolha o slot: ");
             slot = lerInteiroPersonagem();
-
-            while (getchar() != '\n');
 
             desequiparItem(personagem, slot);
 
@@ -304,6 +284,11 @@ int main()
         }
 
         case 0:
+            for (int i = 0; i < cadastro.quantidade; i++)
+            {
+                free(cadastro.personagens[i].inventario.itens);
+            }
+
             printf("\nSaindo do programa...\n");
             break;
 

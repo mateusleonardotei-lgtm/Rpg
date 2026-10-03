@@ -2,6 +2,9 @@
 #include <string.h>
 #include "item.h"
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para ler um número inteiro do usuário, garantindo que seja válido
+
 int lerInteiroItem()
 {
     int valor;
@@ -20,6 +23,8 @@ int lerInteiroItem()
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para ler o nome do item, garantindo que não exceda o tamanho máximo permitido
 
 int lerNomeItem(char nome[])
 {
@@ -45,6 +50,8 @@ int lerNomeItem(char nome[])
     return excedeu;
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para cadastrar um novo item, preenchendo seus atributos com base na entrada do usuário
 
 void cadastrarItem(item *novo)
 {
@@ -55,8 +62,6 @@ void cadastrarItem(item *novo)
     {
         printf("\nDigite o id do item: ");
         novo->id = lerInteiroItem();
-
-        while (getchar() != '\n');
 
         if (novo->id <= 0)
         {
@@ -114,7 +119,6 @@ void cadastrarItem(item *novo)
 
         novo->espacos = lerInteiroItem();
 
-        while (getchar() != '\n');
 
         if (novo->espacos < 1 || novo->espacos > 50)
         {
@@ -129,8 +133,6 @@ void cadastrarItem(item *novo)
 
         novo->bonusAtaque = lerInteiroItem();
 
-        while (getchar() != '\n');
-
         if (novo->bonusAtaque < 0)
         {
             printf("Erro: o bonus nao pode ser negativo!\n");
@@ -143,8 +145,6 @@ void cadastrarItem(item *novo)
         printf("\nDigite o bonus de defesa do item: ");
 
         novo->bonusDefesa = lerInteiroItem();
-
-        while (getchar() != '\n');
 
         if (novo->bonusDefesa < 0)
         {
@@ -159,8 +159,6 @@ void cadastrarItem(item *novo)
 
         novo->bonusVida = lerInteiroItem();
 
-        while (getchar() != '\n');
-
         if (novo->bonusVida < 0)
         {
             printf("Erro: o bonus nao pode ser negativo!\n");
@@ -173,8 +171,6 @@ void cadastrarItem(item *novo)
         printf("\nDigite o bonus de iniciativa do item: ");
 
         novo->bonusIniciativa = lerInteiroItem();
-
-        while (getchar() != '\n');
 
         if (novo->bonusIniciativa < 0)
         {
@@ -189,8 +185,6 @@ void cadastrarItem(item *novo)
 
         novo->poder = lerInteiroItem();
 
-        while (getchar() != '\n');
-
         if (novo->poder < 0)
         {
             printf("Erro: o poder nao pode ser negativo!\n");
@@ -201,6 +195,9 @@ void cadastrarItem(item *novo)
 
     printf("\nItem preenchido com sucesso!\n");
 }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para exibir os detalhes de um item
 
 void mostrarItem(item *i)
 {

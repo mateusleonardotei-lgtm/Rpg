@@ -11,7 +11,7 @@ typedef enum
     ANAO,
     HUMANO,
     HALFING,
-    DRUIDA,
+    VAMPIRO,
     DRACONICO,
     DEMIHUMANO,
     ORC,

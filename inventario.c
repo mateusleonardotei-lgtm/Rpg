@@ -12,34 +12,41 @@ void inicializarInventario(INVENTARIO *inventario)
     inventario->itens = malloc(inventario->capacidade * sizeof(item)); // aloca dinamicamente a memória para o array de itens
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para adicionar um item ao inventário
-void adicionarItem(INVENTARIO *inventario, item *novo)
-{   
 
-    if(buscarItem(inventario, novo->id) != NULL){
+int adicionarItem(INVENTARIO *inventario, item *novo)
+{
+    if (buscarItem(inventario, novo->id) != NULL)
+    {
         printf("Erro: ja existe um item com esse ID no inventario!\n");
-        return;
+        return 0;
     }
-    if (inventario->quantidade >= inventario->capacidade) // verifica se o inventário está cheio
+
+    if (inventario->quantidade >= inventario->capacidade)
     {
         printf("Erro: inventario cheio!\n");
-        return;
+        return 0;
     }
 
-    if (inventario->espacosOcupados + novo->espacos > inventario->capacidade) // verifica se há espaço suficiente no inventário para o novo item
+    if (inventario->espacosOcupados + novo->espacos > inventario->capacidade)
     {
         printf("Erro: nao ha espaco suficiente no inventario para este item!\n");
-        return;
+        return 0;
     }
 
-    inventario->itens[inventario->quantidade] = *novo; // adiciona o item ao array de itens
-    inventario->quantidade++;                          // incrementa a quantidade de itens
-    inventario->espacosOcupados += novo->espacos;      // incrementa os espaços ocupados
+    inventario->itens[inventario->quantidade] = *novo;
+    inventario->quantidade++;
+    inventario->espacosOcupados += novo->espacos;
 
     printf("Item adicionado ao inventario com sucesso!\n");
+
+    return 1;
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para buscar um item no inventário pelo ID
+
 item *buscarItem(INVENTARIO *inventario, int id)
 {
     for (int i = 0; i < inventario->quantidade; i++)
@@ -53,9 +60,9 @@ item *buscarItem(INVENTARIO *inventario, int id)
     return NULL; // retorna NULL se o item não for encontrado
 }
 
-
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para remover um item do inventário pelo ID
+
 void removerItem(INVENTARIO *inventario, int id)
 {
     int posicao = -1;
@@ -88,7 +95,8 @@ void removerItem(INVENTARIO *inventario, int id)
     printf("Item removido do inventario com sucesso!\n");
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para listar todos os itens do inventário
 
 void listarInventario(INVENTARIO *inventario)
 {
