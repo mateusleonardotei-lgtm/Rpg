@@ -10,7 +10,13 @@ typedef enum
     ELFO,
     ANAO,
     HUMANO,
-    HALFING
+    HALFING,
+    DRUIDA,
+    DRACONICO,
+    DEMIHUMANO,
+    ORC,
+    ANJO,
+    DEMONIO,
 
 } RACA;
 
@@ -20,7 +26,13 @@ typedef enum
     GUERREIRO,
     MAGO,
     LADINO,
-    CLERIGO
+    CLERIGO,
+    ARQUEIRO,
+    BERSERKER,
+    ALQUIMISTA,
+    BEASTMASTER,
+    MESTRE_EM_ARMADILHAS,
+    SUMMONER,
 
 } CLASSE;
 
