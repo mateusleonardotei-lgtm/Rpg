@@ -8,11 +8,12 @@ int main()
 {
     CadastroPersonagens cadastro;
     PERSONAGEM novo;
-    PERSONAGEM *encontrado;
+    RESULTADO resultado;
 
     int opcao;
-    int idBusca;
     int opcaoInventario;
+    int idItem;
+    int slot;
 
     inicializarCadastro(&cadastro);
     do
@@ -30,6 +31,7 @@ int main()
         printf("8 - Equipar item \n");
         printf("9 - Desequipar item \n");
         printf("10 - Exibir atributos totais \n");
+        printf("11 - Quantidade de personagens cadastrados \n");
         printf("0 - Sair\n");
         printf("============================\n");
 
@@ -42,7 +44,26 @@ int main()
             printf("\n---- CADASTRO ----\n");
 
             preencherPersonagem(&novo);
-            cadastrarPersonagem(&novo, &cadastro);
+            resultado = cadastrarPersonagem(&novo, &cadastro);
+
+            switch (resultado)
+            {
+            case SUCESSO:;
+                printf("\nPersonagem cadastrado com sucesso!\n");
+                break;
+            case CADASTRO_CHEIO:;
+                printf("\nErro: limite de personagens atingido!\n");
+                break;
+            case ID_DUPLICADO:;
+                printf("\nErro: ID ja existe! Escolha outro ID.\n");
+                break;
+            case DADOS_INVALIDOS:;
+                printf("\nErro: dados invalidos! Verifique os atributos do personagem.\n");
+                break;
+            default:;
+                printf("\nErro desconhecido ao cadastrar personagem!\n");
+                break;
+            }
 
             break;
 
@@ -51,32 +72,64 @@ int main()
             break;
 
         case 3:;
-            printf("\nDigite o ID do personagem que deseja buscar: ");
-            idBusca = lerInteiroPersonagem();
+            int id;
+            PERSONAGEM *personagem;
 
-            encontrado = buscarPersonagemPorId(&cadastro, idBusca);
+            printf("\nDigite o ID do personagem: ");
+            id = lerInteiroPersonagem();
 
-            if (encontrado != NULL)
-            {
-                printf("\nPersonagem encontrado!\n");
-                mostrarPersonagem(encontrado);
-            }
-            else
+            personagem = buscarPersonagemPorId(&cadastro, id);
+
+            if (personagem == NULL)
             {
                 printf("\nPersonagem nao encontrado!\n");
             }
-
+            else
+            {
+                mostrarPersonagem(personagem);
+            }
             break;
 
         case 4:;
-            alterarPersonagem(&cadastro);
+            resultado = alterarPersonagem(&cadastro);
+
+            if (resultado == SUCESSO)
+            {
+                printf("\nAlteracao realizada com sucesso!\n");
+            }
+            else if (resultado == NAO_ENCONTRADO)
+            {
+                printf("\nPersonagem nao encontrado!\n");
+            }
+            else if (resultado == DADOS_INVALIDOS)
+            {
+                printf("\nDados invalidos!\n");
+            }
+            else if (resultado == CANCELADO)
+            {
+                printf("\nAlteracao cancelada.\n");
+            }
+
             break;
 
         case 5:;
-            excluirPersonagem(&cadastro);
+
+            printf("\nDigite o ID do personagem que deseja excluir: ");
+            id = lerInteiroPersonagem();
+            
+            resultado = excluirPersonagem(&cadastro, id);
+
+            if (resultado == SUCESSO)
+            {
+                printf("\nPersonagem excluido com sucesso!\n");
+            }
+            else if (resultado == NAO_ENCONTRADO)
+            {
+                printf("\nPersonagem nao encontrado!\n");
+            }
             break;
 
-        case 6:
+        case 6:;
         {
             int idPersonagem;
             PERSONAGEM *personagem;
@@ -108,19 +161,32 @@ int main()
 
                 switch (opcaoInventario)
                 {
-                case 1:
+                case 1:;
                 {
                     item novoItem;
-
-                    printf("\n---- ADICIONAR ITEM ----\n");
+                    RESULTADO_INVENTARIO resultadoInventario;
 
                     cadastrarItem(&novoItem);
-                    adicionarItem(&personagem->inventario, &novoItem);
+
+                    resultadoInventario = adicionarItem(&personagem->inventario, &novoItem);
+
+                    if (resultadoInventario == INVENTARIO_SUCESSO)
+                    {
+                        printf("\nItem adicionado ao inventario com sucesso!\n");
+                    }
+                    else if (resultadoInventario == ITEM_DUPLICADO)
+                    {
+                        printf("\nErro: ja existe um item com esse ID no inventario!\n");
+                    }
+                    else if (resultadoInventario == INVENTARIO_CHEIO)
+                    {
+                        printf("\nErro: nao ha espaco suficiente no inventario!\n");
+                    }
 
                     break;
                 }
 
-                case 2:
+                case 2:;
                 {
                     int idItem;
                     item *itemEncontrado;
@@ -142,30 +208,40 @@ int main()
                     break;
                 }
 
-                case 3:
-                {
+                case 3:;
+
                     int idItem;
 
                     printf("\nDigite o ID do item que deseja remover: ");
                     idItem = lerInteiroPersonagem();
 
-                    removerItem(&personagem->inventario, idItem);
+                    RESULTADO_INVENTARIO resultadoInventario;
+
+                    resultadoInventario = removerItem(&personagem->inventario, idItem);
+
+                    if (resultadoInventario == INVENTARIO_SUCESSO)
+                    {
+                        printf("\nItem removido do inventario com sucesso!\n");
+                    }
+                    else if (resultadoInventario == ITEM_NAO_ENCONTRADO)
+                    {
+                        printf("\nItem nao encontrado no inventario!\n");
+                    }
 
                     break;
-                }
 
-                case 4:
+                case 4:;
                     listarInventario(&personagem->inventario);
                     break;
 
-                case 5:
-                    printf("\nEspacos ocupados: %d/%d\n", personagem->inventario.espacosOcupados,personagem->inventario.capacidade);
+                case 5:;
+                    printf("\nEspacos ocupados: %d/%d\n", calcularOcupacaoInventario(&personagem->inventario), CAPACIDADE_INVENTARIO);
 
-                    printf("Espacos livres: %d\n", personagem->inventario.capacidade -personagem->inventario.espacosOcupados);
+                    printf("Espacos livres: %d\n", CAPACIDADE_INVENTARIO - calcularOcupacaoInventario(&personagem->inventario));
 
                     break;
 
-                case 0:
+                case 0:;
                     printf("\nVoltando ao menu principal...\n");
                     break;
 
@@ -179,7 +255,7 @@ int main()
             break;
         }
 
-        case 7:
+        case 7:;
         {
             int idPersonagem;
             PERSONAGEM *personagem;
@@ -200,16 +276,11 @@ int main()
             break;
         }
 
-        case 8:
-        {
-            int idPersonagem;
-            int idItem;
-            PERSONAGEM *personagem;
-
+        case 8:;
             printf("\nDigite o ID do personagem: ");
-            idPersonagem = lerInteiroPersonagem();
+            id = lerInteiroPersonagem();
 
-            personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
+            personagem = buscarPersonagemPorId(&cadastro, id);
 
             if (personagem == NULL)
             {
@@ -217,24 +288,31 @@ int main()
                 break;
             }
 
-            printf("\nDigite o ID do item que deseja equipar: ");
+            printf("Digite o ID do item: ");
             idItem = lerInteiroPersonagem();
 
-            equiparItem(personagem, idItem);
+            resultado = equiparItem(personagem, idItem);
+
+            if (resultado == SUCESSO)
+            {
+                printf("\nItem equipado com sucesso!\n");
+            }
+            else if (resultado == NAO_ENCONTRADO)
+            {
+                printf("\nItem nao encontrado no inventario!\n");
+            }
+            else if (resultado == DADOS_INVALIDOS)
+            {
+                printf("\nNao foi possivel equipar o item: slot ocupado ou maos ocupadas!\n");
+            }
 
             break;
-        }
 
-        case 9:
-        {
-            int idPersonagem;
-            int slot;
-            PERSONAGEM *personagem;
-
+        case 9:;
             printf("\nDigite o ID do personagem: ");
-            idPersonagem = lerInteiroPersonagem();
+            id = lerInteiroPersonagem();
 
-            personagem = buscarPersonagemPorId(&cadastro, idPersonagem);
+            personagem = buscarPersonagemPorId(&cadastro, id);
 
             if (personagem == NULL)
             {
@@ -242,7 +320,7 @@ int main()
                 break;
             }
 
-            printf("\n---- DESEQUIPAR ITEM ----\n");
+            printf("\nDigite o slot que deseja desequipar:\n");
             printf("0 - Elmo\n");
             printf("1 - Peitoral\n");
             printf("2 - Manoplas\n");
@@ -253,16 +331,36 @@ int main()
             printf("7 - Cinto\n");
             printf("8 - Mao direita\n");
             printf("9 - Mao esquerda\n");
+            printf("Opcao: ");
 
-            printf("\nEscolha o slot: ");
             slot = lerInteiroPersonagem();
 
-            desequiparItem(personagem, slot);
+            resultado = desequiparItem(personagem, slot);
+
+            if (resultado == SUCESSO)
+            {
+                printf("\nItem desequipado com sucesso!\n");
+            }
+            else if (resultado == DADOS_INVALIDOS)
+            {
+                printf("\nSlot invalido!\n");
+            }
+            else if (resultado == NAO_ENCONTRADO)
+            {
+                printf("\nEsse slot esta vazio!\n");
+            }
+            else if (resultado == CADASTRO_CHEIO)
+            {
+                printf("\nNao foi possivel desequipar: inventario sem espaco suficiente!\n");
+            }
+            else if (resultado == ID_DUPLICADO)
+            {
+                printf("\nNao foi possivel desequipar: ja existe um item com esse ID no inventario!\n");
+            }
 
             break;
-        }
 
-        case 10:
+        case 10:;
         {
             int idPersonagem;
             PERSONAGEM *personagem;
@@ -283,16 +381,18 @@ int main()
             break;
         }
 
-        case 0:
-            for (int i = 0; i < cadastro.quantidade; i++)
-            {
-                free(cadastro.personagens[i].inventario.itens);
-            }
+        case 11:;
+            printf("\nQuantidade de personagens cadastrados: %d\n",
+                   obterQuantidadePersonagens(&cadastro));
+            break;
+
+        case 0:;
+            liberarCadastro(&cadastro);
 
             printf("\nSaindo do programa...\n");
             break;
 
-        default:
+        default:;
             printf("\nOpcao invalida!\n");
             break;
         }

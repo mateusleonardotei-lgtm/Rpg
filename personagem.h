@@ -7,6 +7,17 @@
 
 typedef enum
 {
+    SUCESSO,
+    CADASTRO_CHEIO,
+    ID_DUPLICADO,
+    NAO_ENCONTRADO,
+    DADOS_INVALIDOS,
+    CANCELADO
+
+} RESULTADO;
+
+typedef enum
+{
     ELFO,
     ANAO,
     HUMANO,
@@ -70,17 +81,20 @@ typedef struct
 
 void inicializarCadastro(CadastroPersonagens *cadastro);
 void preencherPersonagem(PERSONAGEM *novo);
-void cadastrarPersonagem(PERSONAGEM *novo, CadastroPersonagens *cadastro);
+RESULTADO cadastrarPersonagem(PERSONAGEM *novo, CadastroPersonagens *cadastro);
 void mostrarPersonagem(PERSONAGEM *p);
 void listarPersonagens(CadastroPersonagens *cadastro);
-void alterarPersonagem(CadastroPersonagens *cadastro);
-void excluirPersonagem(CadastroPersonagens *cadastro);
+RESULTADO alterarPersonagem(CadastroPersonagens *cadastro);
+RESULTADO excluirPersonagem(CadastroPersonagens *cadastro, int id);
 void listarEquipamentos(PERSONAGEM *personagem);
-void equiparItem(PERSONAGEM *personagem, int idItem);
-void desequiparItem(PERSONAGEM *personagem, int slot);
+RESULTADO equiparItem(PERSONAGEM *personagem, int idItem);
+RESULTADO desequiparItem(PERSONAGEM *personagem, int slot);
 void exibirAtributosTotais(PERSONAGEM *personagem);
+void liberarCadastro(CadastroPersonagens *cadastro);
 
 PERSONAGEM *buscarPersonagemPorId(CadastroPersonagens *cadastro, int id);
 int lerInteiroPersonagem();
+int obterQuantidadePersonagens(CadastroPersonagens *cadastro);
+int validarPersonagem(PERSONAGEM *personagem);
 
 #endif // PERSONAGEM_H

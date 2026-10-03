@@ -5,19 +5,26 @@
 
 #define CAPACIDADE_INVENTARIO 50
 
+typedef enum
+{
+    INVENTARIO_SUCESSO,
+    INVENTARIO_CHEIO,
+    ITEM_DUPLICADO,
+    ITEM_NAO_ENCONTRADO
+} RESULTADO_INVENTARIO;
+
 typedef struct
 {
-    item *itens;
+    item itens[CAPACIDADE_INVENTARIO];
     int quantidade;
     int capacidade;
-    int espacosOcupados;
 } INVENTARIO;
 
 void inicializarInventario(INVENTARIO *inventario);
-void removerItem(INVENTARIO *inventario, int id);
+RESULTADO_INVENTARIO removerItem(INVENTARIO *inventario, int id);
 void listarInventario(INVENTARIO *inventario);
-
 item *buscarItem(INVENTARIO *inventario, int id);
-int adicionarItem(INVENTARIO *inventario, item *novo);
+RESULTADO_INVENTARIO adicionarItem(INVENTARIO *inventario, item *novo);
+int calcularOcupacaoInventario(const INVENTARIO *inventario);
 
 #endif // INVENTARIO_H

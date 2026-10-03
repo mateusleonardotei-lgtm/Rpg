@@ -4,44 +4,51 @@
 
 // Função para inicializar o inventário
 void inicializarInventario(INVENTARIO *inventario)
-{
-    inventario->espacosOcupados = 0;                // o inventario começa com 0 espaços ocupados
+{         
     inventario->quantidade = 0;                     // o inventario começa com 0 itens
     inventario->capacidade = CAPACIDADE_INVENTARIO; // capacidade máxima do inventário de 50
     
-    inventario->itens = malloc(inventario->capacidade * sizeof(item)); // aloca dinamicamente a memória para o array de itens
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para calcular a ocupação do inventário em termos de espaços ocupados pelos itens
+
+int calcularOcupacaoInventario(const INVENTARIO *inventario)
+{
+    int ocupacao = 0;
+
+    for (int i = 0; i < inventario->quantidade; i++)
+    {
+        ocupacao += inventario->itens[i].espacos;
+    }
+
+    return ocupacao;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para adicionar um item ao inventário
 
-int adicionarItem(INVENTARIO *inventario, item *novo)
+RESULTADO_INVENTARIO adicionarItem(INVENTARIO *inventario, item *novo)
 {
     if (buscarItem(inventario, novo->id) != NULL)
     {
-        printf("Erro: ja existe um item com esse ID no inventario!\n");
-        return 0;
+        return ITEM_DUPLICADO;
     }
 
     if (inventario->quantidade >= inventario->capacidade)
     {
-        printf("Erro: inventario cheio!\n");
-        return 0;
+        return INVENTARIO_CHEIO;
     }
 
-    if (inventario->espacosOcupados + novo->espacos > inventario->capacidade)
-    {
-        printf("Erro: nao ha espaco suficiente no inventario para este item!\n");
-        return 0;
-    }
+   if (calcularOcupacaoInventario(inventario) + novo->espacos > CAPACIDADE_INVENTARIO)
+{
+    return INVENTARIO_CHEIO;
+}
 
     inventario->itens[inventario->quantidade] = *novo;
     inventario->quantidade++;
-    inventario->espacosOcupados += novo->espacos;
 
-    printf("Item adicionado ao inventario com sucesso!\n");
-
-    return 1;
+    return INVENTARIO_SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,11 +70,11 @@ item *buscarItem(INVENTARIO *inventario, int id)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para remover um item do inventário pelo ID
 
-void removerItem(INVENTARIO *inventario, int id)
+RESULTADO_INVENTARIO removerItem(INVENTARIO *inventario, int id)
 {
     int posicao = -1;
 
-    for (int i = 0; i < inventario->quantidade; i++) // procura o item pelo ID e armazena a posição do item encontrado
+    for (int i = 0; i < inventario->quantidade; i++)
     {
         if (inventario->itens[i].id == id)
         {
@@ -76,23 +83,20 @@ void removerItem(INVENTARIO *inventario, int id)
         }
     }
 
-    if (posicao == -1) // verifica se o item foi encontrado
+    if (posicao == -1)
     {
-        printf("Erro: item nao encontrado no inventario!\n");
-        return;
+        return ITEM_NAO_ENCONTRADO;
     }
 
-    int espacosRemovidos = inventario->itens[posicao].espacos; // armazena a quantidade de espaços ocupados pelo item que será removido
 
     for (int i = posicao; i < inventario->quantidade - 1; i++)
     {
-        inventario->itens[i] = inventario->itens[i + 1]; // move os itens restantes para preencher o espaço do item removido
+        inventario->itens[i] = inventario->itens[i + 1];
     }
 
-    inventario->quantidade--; // decrementa a quantidade de itens no inventário
-    inventario->espacosOcupados -= espacosRemovidos; // decrementa a quantidade de espaços ocupados pelo item removido
+    inventario->quantidade--;
 
-    printf("Item removido do inventario com sucesso!\n");
+    return INVENTARIO_SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -114,5 +118,9 @@ void listarInventario(INVENTARIO *inventario)
         mostrarItem(&inventario->itens[i]);
     }
 
-    printf("\nEspacos ocupados: %d/%d\n", inventario->espacosOcupados,inventario->capacidade);
+    int ocupacao = calcularOcupacaoInventario(inventario);
+
+    printf("Espacos ocupados: %d/%d\n", ocupacao,CAPACIDADE_INVENTARIO);
+
+    printf("Espacos livres: %d\n", CAPACIDADE_INVENTARIO - ocupacao);
 }

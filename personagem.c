@@ -214,15 +214,15 @@ void preencherPersonagem(PERSONAGEM *novo)
         // Defesa
         do
         {
-            printf("\nDigite a defesa do personagem (entre 0 e 30):\n ");
+            printf("\nDigite a defesa do personagem (entre 1 e 30):\n ");
             fflush(stdout);
             novo->defesa = lerInteiroPersonagem();
 
-            if (novo->defesa < 0)
+            if (novo->defesa < 1 || novo->defesa > 30)
             {
-                printf("Erro: a defesa nao pode ser negativa!\n");
+                printf("Erro: a defesa nao pode ser menor que 1 ou maior que 30!\n");
             }
-        } while (novo->defesa < 0 || novo->defesa > 30);
+        } while (novo->defesa < 1 || novo->defesa > 30);
 
         // Iniciativa
         do
@@ -296,29 +296,35 @@ void inicializarCadastro(CadastroPersonagens *cadastro)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para cadastrar um novo personagem no cadastro
 
-void cadastrarPersonagem(PERSONAGEM *novo, CadastroPersonagens *cadastro)
+RESULTADO cadastrarPersonagem(PERSONAGEM *novo, CadastroPersonagens *cadastro)
 {
-    if (cadastro->quantidade >= MAX_PERSONAGENS)
+    if (!validarPersonagem(novo))
     {
-        printf("Erro: limite de personagens atingido!\n");
-        return;
+        return DADOS_INVALIDOS;
     }
 
-    // Verifica se o ID já existe
+    if (cadastro->quantidade >= MAX_PERSONAGENS)
+    {
+        return CADASTRO_CHEIO;
+    }
+
     if (verificarId(cadastro->personagens, cadastro->quantidade, novo->id))
     {
-        printf("Erro: ID ja existe! Escolha outro ID.\n");
-        return;
+        return ID_DUPLICADO;
     }
 
     cadastro->personagens[cadastro->quantidade] = *novo;
+
     inicializarInventario(&cadastro->personagens[cadastro->quantidade].inventario);
-    for(int i = 0; i < 10; i++){
+
+    for (int i = 0; i < 10; i++)
+    {
         cadastro->personagens[cadastro->quantidade].equipamentosOcupados[i] = 0;
     }
+
     cadastro->quantidade++;
 
-    printf("Personagem cadastrado com sucesso!\n");
+    return SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -447,7 +453,7 @@ PERSONAGEM *buscarPersonagemPorId(CadastroPersonagens *cadastro, int id)
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para alterar os atributos de um personagem existente
-void alterarPersonagem(CadastroPersonagens *cadastro)
+RESULTADO alterarPersonagem(CadastroPersonagens *cadastro)
 {
 
     int id;
@@ -460,8 +466,7 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
 
     if (personagem == NULL)
     {
-        printf("Personagem nao encontrado!\n");
-        return;
+        return NAO_ENCONTRADO;
     }
 
     printf("\nPersonagem encontrado!\n");
@@ -487,17 +492,29 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
     switch (opcao)
     {
     case 1:;
-        printf("Digite o novo nome: ");
-        lerNomePersonagem(personagem->nome);
 
-        if (strlen(personagem->nome) == 0)
+        char novoNome[50];
+        int nomeInvalido;
+
+        do
         {
-            printf("Erro: o nome nao pode ser vazio!\n");
-        }
-        else
-        {
-            printf("Nome alterado com sucesso!\n");
-        }
+            printf("Digite o novo nome: ");
+
+            nomeInvalido = lerNomePersonagem(novoNome);
+
+            if (strlen(novoNome) == 0)
+            {
+                printf("Erro: o nome nao pode ser vazio!\n");
+            }
+            else if (nomeInvalido)
+            {
+                printf("Erro: o nome nao pode ter mais de 49 caracteres!\n");
+            }
+
+        } while (strlen(novoNome) == 0 || nomeInvalido);
+
+        strcpy(personagem->nome, novoNome);
+
         break;
 
     case 2:;
@@ -520,12 +537,11 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
 
             if (tempRaca < 0 || tempRaca > 9)
             {
-                printf("Erro: raca invalida! Digite um valor entre 0 e 3.\n");
+                printf("Erro: raca invalida! Digite um valor entre 0 e 9.\n");
             }
         } while (tempRaca < 0 || tempRaca > 9);
         personagem->raca = (RACA)tempRaca;
 
-        printf("Raca alterada com sucesso!\n");
         break;
 
     case 3:;
@@ -548,12 +564,11 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
 
             if (tempClasse < 0 || tempClasse > 9)
             {
-                printf("Erro: classe invalida! Digite um valor entre 0 e 3.\n");
+                printf("Erro: classe invalida! Digite um valor entre 0 e 9.\n");
             }
         } while (tempClasse < 0 || tempClasse > 9);
         personagem->classe = (CLASSE)tempClasse;
 
-        printf("Classe alterada com sucesso!\n");
         break;
 
     case 4:;
@@ -571,7 +586,6 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         } while (novoNivel < 1 || novoNivel > 20);
         personagem->nivel = novoNivel;
 
-        printf("Nivel alterado com sucesso!\n");
         break;
 
     case 5:;
@@ -583,16 +597,15 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
             printf("\nDigite a nova vida maxima:\n ");
             novaVidaMaxima = lerInteiroPersonagem();
 
-            if (novaVidaMaxima < personagem->vidaAtual || novaVidaMaxima > 999)
+            if (novaVidaMaxima < personagem->vidaAtual || novaVidaMaxima > 999 || novaVidaMaxima < 1)
             {
                 printf("Erro: a vida maxima nao pode ser menor que a vida atual (%d)!\n", personagem->vidaAtual);
             }
 
-        } while (novaVidaMaxima < personagem->vidaAtual || novaVidaMaxima > 999);
+        } while (novaVidaMaxima < 1 || novaVidaMaxima < personagem->vidaAtual || novaVidaMaxima > 999);
 
         personagem->vidaMaxima = novaVidaMaxima;
 
-        printf("Vida maxima alterada com sucesso!\n");
         break;
     }
 
@@ -610,7 +623,6 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         } while (novaVidaAtual < 0 || novaVidaAtual > personagem->vidaMaxima);
         personagem->vidaAtual = novaVidaAtual;
 
-        printf("Vida atual alterada com sucesso!\n");
         break;
 
     case 7:;
@@ -627,24 +639,22 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         } while (novoAtaque < 0 || novoAtaque > 30);
         personagem->ataque = novoAtaque;
 
-        printf("Ataque alterado com sucesso!\n");
         break;
 
         case 8:;
         int novaDefesa;
         do
         {
-            printf("\nDigite a nova defesa do personagem (entre 0 e 30):\n ");
+            printf("\nDigite a nova defesa do personagem (entre 1 e 30):\n ");
             novaDefesa = lerInteiroPersonagem();
 
-            if (novaDefesa < 0 || novaDefesa > 30)
+            if (novaDefesa < 1 || novaDefesa > 30)
             {
-                printf("Erro: a defesa deve ser entre 0 e 30!\n");
+                printf("Erro: a defesa deve ser entre 1 e 30!\n");
             }
-        } while (novaDefesa < 0 || novaDefesa > 30);
+        } while (novaDefesa < 1 || novaDefesa > 30);
         personagem->defesa = novaDefesa;
 
-        printf("Defesa alterada com sucesso!\n");
         break;
 
         case 9:;
@@ -661,7 +671,6 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         } while (novaIniciativa < -5 || novaIniciativa > 20);
         personagem->iniciativa = novaIniciativa;
 
-        printf("Iniciativa alterada com sucesso!\n");
         break;
 
         case 10:;
@@ -678,50 +687,46 @@ void alterarPersonagem(CadastroPersonagens *cadastro)
         } while (novoPoder < 1 || novoPoder > 100);
         personagem->poder = novoPoder;
 
-        printf("Poder alterado com sucesso!\n");
         break;
 
         case 0:;
-        printf("Alteracao cancelada.\n");
-        break;
+        return CANCELADO;
 
         default:;
-        printf("Opcao invalida!\n");
-        break;
+        return DADOS_INVALIDOS;
     }
+    return SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para excluir um personagem do cadastro
 
-void excluirPersonagem(CadastroPersonagens *cadastro){
-    int id;
+RESULTADO excluirPersonagem(CadastroPersonagens *cadastro, int id)
+{
     int index = -1;
 
-    printf("Digite o ID do personagem que deseja excluir:\n ");
-    id = lerInteiroPersonagem();
-
-    for(int i = 0; i < cadastro->quantidade; i++){
-        if(cadastro->personagens[i].id == id){
+    for (int i = 0; i < cadastro->quantidade; i++)
+    {
+        if (cadastro->personagens[i].id == id)
+        {
             index = i;
             break;
         }
     }
 
-    if(index == -1){
-        printf("Personagem nao encontrado!\n");
-        return;
+    if (index == -1)
+    {
+        return NAO_ENCONTRADO;
     }
 
-    free(cadastro->personagens[index].inventario.itens); // libera a memória alocada para o inventário do personagem
-
-    for(int i = index; i < cadastro->quantidade - 1; i++){
-        cadastro->personagens[i] = cadastro->personagens[i + 1]; // excluindo o personagem e movendo os demais para preencher o espaço
+    for (int i = index; i < cadastro->quantidade - 1; i++)
+    {
+        cadastro->personagens[i] = cadastro->personagens[i + 1]; // Move todos os personagens à frente do excluído uma posição para trás
     }
 
     cadastro->quantidade--;
 
-    printf("Personagem excluido com sucesso!\n");
+    return SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -814,14 +819,13 @@ void listarEquipamentos(PERSONAGEM *personagem)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para equipar um item em um personagem
 
-void equiparItem(PERSONAGEM *personagem, int idItem)
+RESULTADO equiparItem(PERSONAGEM *personagem, int idItem)
 {
     item *item = buscarItem(&personagem->inventario, idItem);
 
     if (item == NULL)
     {
-        printf("\nErro: item nao encontrado no inventario!\n");
-        return;
+        return NAO_ENCONTRADO;
     }
 
     switch (item->tipo)
@@ -829,78 +833,67 @@ void equiparItem(PERSONAGEM *personagem, int idItem)
     case ELMO:
         if (personagem->equipamentosOcupados[0])
         {
-            printf("\nErro: o slot de Elmo ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[0] = *item;
         personagem->equipamentosOcupados[0] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nElmo equipado com sucesso!\n");
         break;
 
     case PEITORAL:
         if (personagem->equipamentosOcupados[1])
         {
-            printf("\nErro: o slot de Peitoral ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[1] = *item;
         personagem->equipamentosOcupados[1] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nPeitoral equipado com sucesso!\n");
         break;
 
     case MANOPLAS:
     if (personagem->equipamentosOcupados[2])
     {
-        printf("\nErro: o slot de Manoplas ja esta ocupado!\n");
-        return;
+        return DADOS_INVALIDOS;
     }
 
     personagem->equipamentos[2] = *item;
     personagem->equipamentosOcupados[2] = 1;
     removerItem(&personagem->inventario, idItem);
 
-    printf("\nManoplas equipadas com sucesso!\n");
-    break;
+    break; 
 
     case CALCA:
         if (personagem->equipamentosOcupados[3])
         {
-            printf("\nErro: o slot de Calca ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[3] = *item;
         personagem->equipamentosOcupados[3] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nCalca equipada com sucesso!\n");
         break;
 
     case BOTAS:
         if (personagem->equipamentosOcupados[4])
         {
-            printf("\nErro: o slot de Botas ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS; 
         }
 
         personagem->equipamentos[4] = *item;
         personagem->equipamentosOcupados[4] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nBotas equipadas com sucesso!\n");
         break;
 
     case ANEL:
         if (personagem->equipamentosOcupados[5])
         {
-            printf("\nErro: o slot de Anel ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[5] = *item;
@@ -913,29 +906,25 @@ void equiparItem(PERSONAGEM *personagem, int idItem)
     case COLAR:
         if (personagem->equipamentosOcupados[6])
         {
-            printf("\nErro: o slot de Colar ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[6] = *item;
         personagem->equipamentosOcupados[6] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nColar equipado com sucesso!\n");
         break;
 
     case CINTO:
         if (personagem->equipamentosOcupados[7])
         {
-            printf("\nErro: o slot de Cinto ja esta ocupado!\n");
-            return;
+            return DADOS_INVALIDOS;
         }
 
         personagem->equipamentos[7] = *item;
         personagem->equipamentosOcupados[7] = 1;
         removerItem(&personagem->inventario, idItem);
 
-        printf("\nCinto equipado com sucesso!\n");
         break;
 
     case ARMA_UMA_MAO:
@@ -946,7 +935,7 @@ void equiparItem(PERSONAGEM *personagem, int idItem)
 
             removerItem(&personagem->inventario, idItem);
 
-            printf("\nArma equipada na mao direita!\n");
+            break;
         }
         else if (!personagem->equipamentosOcupados[9])
         {
@@ -955,11 +944,11 @@ void equiparItem(PERSONAGEM *personagem, int idItem)
 
             removerItem(&personagem->inventario, idItem);
 
-            printf("\nArma equipada na mao esquerda!\n");
+            break;
         }
         else
         {
-            printf("\nErro: as duas maos estao ocupadas!\n");
+            return DADOS_INVALIDOS;
         }
         break;
 
@@ -974,39 +963,45 @@ void equiparItem(PERSONAGEM *personagem, int idItem)
 
             removerItem(&personagem->inventario, idItem);
 
-            printf("\nArma de duas maos equipada!\n");
         }
         else
         {
-            printf("\nErro: e necessario ter as duas maos livres!\n");
+            return DADOS_INVALIDOS;
         }
         break;
     }
+    return SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Função para desequipar um item de um personagem
 
-void desequiparItem(PERSONAGEM *personagem, int slot)
+RESULTADO desequiparItem(PERSONAGEM *personagem, int slot)
 {
-    if (slot < 0 || slot > 9)
+    if (slot < 0 || slot > 9)   
     {
-        printf("\nSlot invalido!\n");
-        return;
+        return DADOS_INVALIDOS;
     }
 
     if (!personagem->equipamentosOcupados[slot])
     {
-        printf("\nEsse slot esta vazio!\n");
-        return;
+        return NAO_ENCONTRADO;
     }
 
     item item = personagem->equipamentos[slot];
 
-    if (!adicionarItem(&personagem->inventario, &item))
+    RESULTADO_INVENTARIO resultadoInventario;
+
+    resultadoInventario = adicionarItem(&personagem->inventario, &item);
+
+    if (resultadoInventario == INVENTARIO_CHEIO)
     {
-        printf("\nNao foi possivel desequipar o item: inventario sem espaco suficiente!\n");
-        return;
+        return CADASTRO_CHEIO;
+    }
+
+    if(resultadoInventario == ITEM_DUPLICADO)
+    {
+        return ID_DUPLICADO;
     }
 
     if (slot == 8 || slot == 9)
@@ -1026,7 +1021,7 @@ void desequiparItem(PERSONAGEM *personagem, int slot)
         personagem->equipamentosOcupados[slot] = 0;
     }
 
-    printf("\nItem desequipado com sucesso!\n");
+    return SUCESSO;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1069,4 +1064,62 @@ void exibirAtributosTotais(PERSONAGEM *personagem)
     printf("Iniciativa: %d + %d = %d\n", personagem->iniciativa, bonusIniciativa, personagem->iniciativa + bonusIniciativa);
 
     printf("Poder: %d + %d = %d\n",personagem->poder, bonusPoder, personagem->poder + bonusPoder);
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para obter a quantidade de personagens cadastrados
+
+int obterQuantidadePersonagens(CadastroPersonagens *cadastro)
+{
+    return cadastro->quantidade;
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para liberar a memória alocada para o cadastro de personagens
+
+void liberarCadastro(CadastroPersonagens *cadastro)
+{
+    cadastro->quantidade = 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Função para validar os atributos de um personagem segunda barreira de proteção.
+
+int validarPersonagem(PERSONAGEM *personagem)
+{
+    if (personagem->id <= 0)
+        return 0;
+
+    if (strlen(personagem->nome) < 1 || strlen(personagem->nome) > 49)
+        return 0;
+
+    if (personagem->raca < 0 || personagem->raca > 9)
+        return 0;
+
+    if (personagem->classe < 0 || personagem->classe > 9)
+        return 0;
+
+    if (personagem->nivel < 1 || personagem->nivel > 20)
+        return 0;
+
+    if (personagem->vidaMaxima < 1 || personagem->vidaMaxima > 999)
+        return 0;
+
+    if (personagem->vidaAtual < 0 ||
+        personagem->vidaAtual > personagem->vidaMaxima)
+        return 0;
+
+    if (personagem->ataque < 0 || personagem->ataque > 30)
+        return 0;
+
+    if (personagem->defesa < 1 || personagem->defesa > 30)
+        return 0;
+
+    if (personagem->iniciativa < -5 || personagem->iniciativa > 20)
+        return 0;
+
+    if (personagem->poder < 1 || personagem->poder > 100)
+        return 0;
+
+    return 1;
 }
